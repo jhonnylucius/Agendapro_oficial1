@@ -111,5 +111,5 @@ class AuthService {
 }
 
 extension on AccessToken {
-  String get token => this.token;
+  String get token => token;
 }

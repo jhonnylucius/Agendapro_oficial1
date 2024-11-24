@@ -65,5 +65,5 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 extension on AccessToken {
-  String get token => this.token;
+  String get token => token;
 }
