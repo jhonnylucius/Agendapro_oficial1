@@ -164,7 +164,7 @@ O Flutter DotEnv é usado para gerenciar variáveis de ambiente de forma segura,
 ## 🌟 **Exemplo Completo do `.env`**
 
 ```env
-FACEBOOK_APP_ID=61876263gsdgsafasfsadg7149280
+FACEBOOK_APP_ID=29835326852385209367294
 FIREBASE_API_KEY=AIzasdsadaaSyAEr3Y8-EU3FMBhdm6HigG-SrNpE24GSW0
 GOOGLE_CLIENT_ID=your-google-client-id
 ```
