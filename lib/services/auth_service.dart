@@ -67,6 +67,22 @@ class AuthService {
     }
   }
 
+  // Método para verificar se o perfil está completo
+  Future<bool> isProfileComplete(String userId) async {
+    try {
+      final snapshot = await _database.child('users/$userId').get();
+      final data = snapshot.value as Map?;
+      if (data == null) return false;
+
+      return data['userType'] != null &&
+          data['city'] != null &&
+          data['phone'] != null;
+    } catch (e) {
+      print('Erro ao verificar perfil completo: $e');
+      return false;
+    }
+  }
+
   // Método para obter dados do usuário atual
   Future<UserModel?> getCurrentUser() async {
     try {

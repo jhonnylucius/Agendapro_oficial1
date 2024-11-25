@@ -8,6 +8,13 @@ class UserModel {
   final String provider;
   final String lastLogin;
   final String createdAt;
+  final String? userType; // Cliente, Prestador de Serviços ou Ambos
+  final String? category; // Autônomo, MEI, etc.
+  final String? areaOfExpertise; // Área de atuação
+  final List<String>? servicesOffered; // Serviços prestados
+  final String? city;
+  final String? phone;
+  final String? cpf;
 
   UserModel({
     required this.id,
@@ -17,6 +24,13 @@ class UserModel {
     required this.provider,
     required this.lastLogin,
     required this.createdAt,
+    this.userType,
+    this.category,
+    this.areaOfExpertise,
+    this.servicesOffered,
+    this.city,
+    this.phone,
+    this.cpf,
   });
 
   Map<String, dynamic> toJson() {
@@ -28,6 +42,13 @@ class UserModel {
       'provider': provider,
       'lastLogin': lastLogin,
       'createdAt': createdAt,
+      'userType': userType,
+      'category': category,
+      'areaOfExpertise': areaOfExpertise,
+      'servicesOffered': servicesOffered,
+      'city': city,
+      'phone': phone,
+      'cpf': cpf,
     };
   }
 
@@ -40,6 +61,13 @@ class UserModel {
       provider: json['provider'] ?? '',
       lastLogin: json['lastLogin'] ?? '',
       createdAt: json['createdAt'] ?? '',
+      userType: json['userType'],
+      category: json['category'],
+      areaOfExpertise: json['areaOfExpertise'],
+      servicesOffered: List<String>.from(json['servicesOffered'] ?? []),
+      city: json['city'],
+      phone: json['phone'],
+      cpf: json['cpf'],
     );
   }
 

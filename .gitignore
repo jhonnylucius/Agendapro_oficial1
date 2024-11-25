@@ -49,8 +49,16 @@ app.*.map.json
 .env
 google-services.json
 firebase_options.dart
+ios/Runner/GoogleService-Info.plist
 android/app/src/main/res/values/strings.xml
 
 # Outros
 *.keystore
 *.jks
+
+.firebase/
+firebase-debug.log
+
+node_modules/
+.package-lock.json
+pubspec.lock
