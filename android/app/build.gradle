@@ -13,7 +13,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database'
 
     // Facebook Login SDK
-    implementation 'com.facebook.android:facebook-login:15.2.0'
+    implementation 'com.facebook.android:facebook-login:latest.release'
 }
 
 android {
