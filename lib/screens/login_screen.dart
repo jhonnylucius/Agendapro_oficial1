@@ -2,9 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   Future<void> _loginWithFacebook(BuildContext context) async {
     try {
       // Faz login com o Facebook
@@ -21,20 +26,27 @@ class LoginScreen extends StatelessWidget {
         // Faz login no Firebase com a credencial
         await FirebaseAuth.instance.signInWithCredential(credential);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login realizado com sucesso!')),
-        );
+        // Verifica se o widget ainda está montado antes de usar o BuildContext
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login realizado com sucesso!')),
+          );
+        }
       } else {
-        // Exibe a mensagem de erro do Facebook
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro no login: ${result.message}')),
-        );
+        // Verifica se o widget ainda está montado
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro no login: ${result.message}')),
+          );
+        }
       }
     } catch (e) {
       // Captura e exibe qualquer outro erro
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao fazer login: $e')),
+        );
+      }
     }
   }
 
