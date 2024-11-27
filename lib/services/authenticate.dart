@@ -116,7 +116,7 @@ class FireStoreUtils {
 
         return await _handleSocialLogin(credential, userData);
       }
-      return 'Apple login failed.';
+      return 'Login falhou.';
     } catch (e) {
       debugPrint('Apple login error: $e');
       return 'Login failed, please try again.';
