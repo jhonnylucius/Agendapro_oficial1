@@ -50,7 +50,7 @@ class _SignUpState extends State<SignUpScreen> {
                   } else {
                     showSnackBar(
                         context,
-                        state.message ??
+                        state?.message ??
                             'Erro ao criar conta. Por favor, tente novamente.');
                   }
                 },
