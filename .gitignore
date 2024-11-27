@@ -3,6 +3,11 @@
 *.log
 *.pyc
 *.swp
+*.tmp
+*.bak
+*.orig
+*.sublime-workspace
+*.sublime-project
 .DS_Store
 .atom/
 .buildlog/
@@ -10,13 +15,11 @@
 .svn/
 migrate_working_dir/
 
-# IntelliJ related
+# IDEs and Editors
 *.iml
 *.ipr
 *.iws
 .idea/
-
-# VS Code related (opcional, comente se necessário versionar .vscode)
 .vscode/
 
 # Flutter/Dart/Pub related
@@ -25,6 +28,7 @@ migrate_working_dir/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
@@ -36,7 +40,7 @@ migrate_working_dir/
 /android/app/release
 /linux/build/
 /windows/build/
-/macos/build/
+./macos/build/
 /web/build/
 
 # Symbolication related
@@ -45,20 +49,29 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Arquivos sensíveis
+# Sensitive Files
 .env
 google-services.json
+constants.dart
 firebase_options.dart
 ios/Runner/GoogleService-Info.plist
 android/app/src/main/res/values/strings.xml
 
-# Outros
+# Flutter Keys
 *.keystore
 *.jks
 
+# Firebase and Debug
 .firebase/
 firebase-debug.log
 
+# Node.js related
 node_modules/
-.package-lock.json
+package-lock.json
+yarn.lock
+
+# Pubspec lock file
 pubspec.lock
+
+# Cache files
+*.lock
