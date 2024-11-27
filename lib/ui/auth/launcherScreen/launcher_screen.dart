@@ -11,7 +11,7 @@ import 'package:flutter_login_screen/ui/home/home_screen.dart';
 /// Tela inicial que redireciona o usuário para a tela apropriada
 /// com base no estado de autenticação ou se é a primeira execução.
 class LauncherScreen extends StatefulWidget {
-  const LauncherScreen({Key? key}) : super(key: key);
+  const LauncherScreen({super.key});
 
   @override
   State<LauncherScreen> createState() => _LauncherScreenState();

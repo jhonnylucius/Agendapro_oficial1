@@ -8,7 +8,7 @@ import 'package:flutter_login_screen/ui/loading_cubit.dart';
 /// Tela para redefinição de senha.
 /// Permite ao usuário solicitar a redefinição de senha por e-mail.
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({Key? key}) : super(key: key);
+  const ResetPasswordScreen({super.key});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -96,7 +96,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             decoration: getInputDecoration(
                                 hint: 'E-mail',
                                 darkMode: isDarkMode(context),
-                                errorColor: Theme.of(context).errorColor),
+                                errorColor: Theme.of(context).colorScheme.error),
                           ),
                         ),
                         Padding(

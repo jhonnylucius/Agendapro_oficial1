@@ -14,7 +14,7 @@ import 'package:flutter_login_screen/ui/loading_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   State createState() => _SignUpState();
@@ -251,7 +251,7 @@ class _SignUpState extends State<SignUpScreen> {
         decoration: getInputDecoration(
           hint: hint,
           darkMode: isDarkMode(context),
-          errorColor: Theme.of(context).errorColor,
+          errorColor: Theme.of(context).colorScheme.error,
         ),
       ),
     );

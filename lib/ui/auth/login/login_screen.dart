@@ -11,7 +11,7 @@ import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
 
 /// Tela de Login para autenticar usuários usando email/senha ou métodos de terceiros.
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State createState() => _LoginScreen();
@@ -117,7 +117,7 @@ class _LoginScreen extends State<LoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Endereço de Email',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).errorColor)),
+                                  errorColor: Theme.of(context).colorScheme.error)),
                         ),
 
                         /// Campo para a senha do usuário.
@@ -140,7 +140,7 @@ class _LoginScreen extends State<LoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Senha',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).errorColor)),
+                                  errorColor: Theme.of(context).colorScheme.error)),
                         ),
 
                         /// Texto para redefinir senha.

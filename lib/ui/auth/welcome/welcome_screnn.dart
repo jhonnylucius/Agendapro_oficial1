@@ -8,7 +8,7 @@ import 'package:flutter_login_screen/ui/auth/welcome/welcome_bloc.dart';
 
 /// Tela de boas-vindas do aplicativo.
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

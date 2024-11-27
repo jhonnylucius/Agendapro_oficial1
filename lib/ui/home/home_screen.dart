@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
   final User user;
 
   /// Recebe o usuário autenticado como parâmetro.
-  const HomeScreen({Key? key, required this.user}) : super(key: key);
+  const HomeScreen({super.key, required this.user});
 
   @override
   State createState() => _HomeState();

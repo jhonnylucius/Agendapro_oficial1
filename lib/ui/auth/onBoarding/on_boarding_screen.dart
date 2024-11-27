@@ -15,11 +15,11 @@ class OnBoardingScreen extends StatefulWidget {
       subtitles; // Títulos e subtítulos para cada página.
 
   const OnBoardingScreen({
-    Key? key,
+    super.key,
     required this.images,
     required this.titles,
     required this.subtitles,
-  }) : super(key: key);
+  });
 
   @override
   State<OnBoardingScreen> createState() => _OnBoardingScreenState();
@@ -130,11 +130,11 @@ class OnBoardingPage extends StatelessWidget {
   final String title, subtitle; // Título e subtítulo da página.
 
   const OnBoardingPage({
-    Key? key,
+    super.key,
     this.image,
     required this.title,
     required this.subtitle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

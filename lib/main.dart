@@ -35,7 +35,7 @@ Future<void> _initializeFacebookAuth() async {
 
 // Widget principal do aplicativo
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
 
 // Classe que inicializa o Firebase e verifica erros durante o processo
 class AppInitializer extends StatefulWidget {
-  const AppInitializer({Key? key}) : super(key: key);
+  const AppInitializer({super.key});
 
   @override
   _AppInitializerState createState() => _AppInitializerState();
@@ -147,7 +147,7 @@ class _AppInitializerState extends State<AppInitializer> {
 
 // Tela exibida quando ocorre um erro
 class _ErrorScreen extends StatelessWidget {
-  const _ErrorScreen({Key? key}) : super(key: key);
+  const _ErrorScreen();
 
   @override
   Widget build(BuildContext context) {
@@ -155,10 +155,10 @@ class _ErrorScreen extends StatelessWidget {
       home: Scaffold(
         body: Container(
           color: Colors.white,
-          child: Center(
+          child: const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(Icons.error_outline, color: Colors.red, size: 50),
                 SizedBox(height: 16),
                 Text(
@@ -177,7 +177,7 @@ class _ErrorScreen extends StatelessWidget {
 
 // Tela exibida durante o carregamento
 class _LoadingScreen extends StatelessWidget {
-  const _LoadingScreen({Key? key}) : super(key: key);
+  const _LoadingScreen();
 
   @override
   Widget build(BuildContext context) {
