@@ -8,195 +8,216 @@ import 'package:flutter_login_screen/model/user.dart';
 import 'package:flutter_login_screen/services/helper.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
 
+/// Classe responsável pela integração com Firebase, autenticação e armazenamento.
 class FireStoreUtils {
-  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  static final Reference _storage = FirebaseStorage.instance.ref();
+  static final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  static final Reference storage = FirebaseStorage.instance.ref();
 
-  /// Fetches the current user from Firestore using their UID.
+  /// Obtém o usuário atual pelo UID do Firebase.
   static Future<User?> getCurrentUser(String uid) async {
     try {
-      final userDoc =
-          await _firestore.collection(usersCollection).doc(uid).get();
-      if (userDoc.exists) {
-        return User.fromJson(userDoc.data()!);
+      DocumentSnapshot<Map<String, dynamic>> userDocument =
+          await firestore.collection(usersCollection).doc(uid).get();
+
+      if (userDocument.exists && userDocument.data() != null) {
+        return User.fromJson(userDocument.data()!);
+      } else {
+        return null;
       }
     } catch (e) {
-      debugPrint('Error fetching user: $e');
+      debugPrint("Erro ao buscar o usuário: $e");
+      return null;
     }
-    return null;
   }
 
-  /// Updates the current user's details in Firestore.
+  /// Atualiza o usuário atual no Firestore.
   static Future<User> updateCurrentUser(User user) async {
     try {
-      await _firestore
+      await firestore
           .collection(usersCollection)
           .doc(user.userID)
           .set(user.toJson());
       return user;
     } catch (e) {
-      debugPrint('Error updating user: $e');
+      debugPrint("Erro ao atualizar o usuário: $e");
       rethrow;
     }
   }
 
-  /// Uploads a user's image to Firebase Storage and returns the URL.
-  static Future<String> uploadUserImage(
+  /// Faz o upload da imagem de perfil do usuário para o Firebase Storage.
+  static Future<String> uploadUserImageToServer(
       Uint8List imageData, String userID) async {
     try {
-      final uploadRef = _storage.child("images/$userID.png");
-      final uploadTask = uploadRef.putData(
+      Reference upload = storage.child("images/$userID.png");
+      UploadTask uploadTask = upload.putData(
           imageData, SettableMetadata(contentType: 'image/jpeg'));
-      return await (await uploadTask).ref.getDownloadURL();
+      String downloadUrl =
+          await (await uploadTask.whenComplete(() {})).ref.getDownloadURL();
+      return downloadUrl;
     } catch (e) {
-      debugPrint('Error uploading image: $e');
+      debugPrint("Erro ao fazer upload da imagem: $e");
       rethrow;
     }
   }
 
-  /// Handles login with email and password.
+  /// Realiza login com e-mail e senha no Firebase.
   static Future<dynamic> loginWithEmailAndPassword(
       String email, String password) async {
     try {
-      final credential = await auth.FirebaseAuth.instance
+      auth.UserCredential result = await auth.FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      return await getCurrentUser(credential.user?.uid ?? '');
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await firestore
+          .collection(usersCollection)
+          .doc(result.user?.uid ?? '')
+          .get();
+
+      if (documentSnapshot.exists) {
+        return User.fromJson(documentSnapshot.data() ?? {});
+      }
+      return null;
     } on auth.FirebaseAuthException catch (e) {
-      return _handleAuthException(e);
+      return _handleFirebaseAuthError(e);
     } catch (e) {
-      debugPrint('Unexpected login error: $e');
-      return 'Login failed, please try again.';
+      debugPrint("Erro ao fazer login: $e");
+      return 'Erro inesperado ao fazer login. Tente novamente.';
     }
   }
 
-  /// Handles Facebook login and returns the authenticated user.
+  /// Realiza login com o Facebook.
   static Future<dynamic> loginWithFacebook() async {
     try {
-      final facebookAuth = FacebookAuth.instance;
-      final result = await facebookAuth.login();
-
+      LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {
-        final accessToken = result.accessToken!;
-        final userData = await facebookAuth.getUserData();
-        return await _handleSocialLogin(
-          auth.FacebookAuthProvider.credential(accessToken.token),
-          userData,
-        );
+        AccessToken? token = result.accessToken;
+        return await handleFacebookLogin(
+            await FacebookAuth.instance.getUserData(), token!);
       }
-      return result.message ?? 'Facebook login failed.';
+      return 'Falha ao realizar login com o Facebook.';
     } catch (e) {
-      debugPrint('Facebook login error: $e');
-      return 'Login failed, please try again.';
+      debugPrint("Erro ao fazer login com o Facebook: $e");
+      return 'Erro ao conectar com o Facebook.';
     }
   }
 
-  /// Handles Apple login and returns the authenticated user.
-  static Future<dynamic> loginWithApple() async {
+  /// Trata o login com dados retornados do Facebook.
+  static Future<dynamic> handleFacebookLogin(
+      Map<String, dynamic> userData, AccessToken token) async {
     try {
-      final appleCredential = await apple.TheAppleSignIn.performRequests([
-        const apple.AppleIdRequest(
-          requestedScopes: [apple.Scope.email, apple.Scope.fullName],
-        ),
-      ]);
+      auth.UserCredential authResult = await auth.FirebaseAuth.instance
+          .signInWithCredential(
+              auth.FacebookAuthProvider.credential(token.token));
 
-      if (appleCredential.status == apple.AuthorizationStatus.authorized) {
-        final credential = auth.OAuthProvider('apple.com').credential(
-          accessToken: String.fromCharCodes(
-              appleCredential.credential?.authorizationCode ?? []),
-          idToken: String.fromCharCodes(
-              appleCredential.credential?.identityToken ?? []),
+      User? user = await getCurrentUser(authResult.user?.uid ?? '');
+
+      if (user != null) {
+        user
+          ..profilePictureURL = userData['picture']['data']['url'] ?? ''
+          ..firstName = userData['name'].split(' ').first
+          ..lastName = userData['name'].split(' ').last
+          ..email = userData['email'] ?? '';
+        return await updateCurrentUser(user);
+      } else {
+        User newUser = User(
+          email: userData['email'] ?? '',
+          firstName: userData['name'].split(' ').first,
+          lastName: userData['name'].split(' ').last,
+          profilePictureURL: userData['picture']['data']['url'] ?? '',
+          userID: authResult.user?.uid ?? '',
         );
-
-        final userData = {
-          'name': '${appleCredential.credential?.fullName?.givenName ?? ''} '
-              '${appleCredential.credential?.fullName?.familyName ?? ''}',
-          'email': appleCredential.credential?.email ?? '',
-        };
-
-        return await _handleSocialLogin(credential, userData);
+        return await createNewUser(newUser);
       }
-      return 'Login falhou.';
     } catch (e) {
-      debugPrint('Apple login error: $e');
-      return 'Login failed, please try again.';
+      debugPrint("Erro ao tratar login com Facebook: $e");
+      return 'Erro ao processar login do Facebook.';
     }
   }
 
-  /// Creates a new user in Firestore.
+  /// Cria um novo usuário no Firestore.
   static Future<String?> createNewUser(User user) async {
     try {
-      await _firestore
+      await firestore
           .collection(usersCollection)
           .doc(user.userID)
           .set(user.toJson());
       return null;
     } catch (e) {
-      debugPrint('Error creating user: $e');
-      return 'Error creating user.';
+      debugPrint("Erro ao criar novo usuário: $e");
+      return 'Erro ao salvar novo usuário no Firestore.';
     }
   }
 
-  /// Logs out the current user.
+  /// Realiza logout do usuário atual.
   static Future<void> logout() async {
-    await auth.FirebaseAuth.instance.signOut();
-  }
-
-  /// Resets the user's password.
-  static Future<void> resetPassword(String email) async {
-    await auth.FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-  }
-
-  /// Common handler for social login (Facebook/Apple).
-  static Future<dynamic> _handleSocialLogin(
-      auth.AuthCredential credential, Map<String, dynamic> userData) async {
     try {
-      final authResult =
-          await auth.FirebaseAuth.instance.signInWithCredential(credential);
-      User? user = await getCurrentUser(authResult.user?.uid ?? '');
-
-      final fullName = (userData['name'] ?? '').split(' ');
-      final firstName = fullName.isNotEmpty ? fullName.first : 'Anonymous';
-      final lastName = fullName.length > 1 ? fullName.sublist(1).join(' ') : '';
-
-      if (user != null) {
-        user
-          ..firstName = firstName
-          ..lastName = lastName
-          ..email = userData['email'] ?? ''
-          ..profilePictureURL = userData['picture']['data']['url'] ?? '';
-        return await updateCurrentUser(user);
-      }
-
-      user = User(
-        email: userData['email'] ?? '',
-        firstName: firstName,
-        lastName: lastName,
-        profilePictureURL: userData['picture']['data']['url'] ?? '',
-        userID: authResult.user?.uid ?? '',
-      );
-      return await createNewUser(user) ?? user;
+      await auth.FirebaseAuth.instance.signOut();
     } catch (e) {
-      debugPrint('Social login error: $e');
-      return 'Login failed, please try again.';
+      debugPrint("Erro ao deslogar: $e");
     }
   }
 
-  /// Handles Firebase exceptions and returns error messages.
-  static String _handleAuthException(auth.FirebaseAuthException exception) {
-    switch (exception.code) {
+  /// Realiza login com número de telefone e cria o usuário, se necessário.
+  static Future<dynamic> loginOrCreateUserWithPhoneNumberCredential({
+    required auth.PhoneAuthCredential credential,
+    required String phoneNumber,
+    String? firstName = 'Anônimo',
+    String? lastName = '',
+    Uint8List? imageData,
+  }) async {
+    try {
+      auth.UserCredential userCredential =
+          await auth.FirebaseAuth.instance.signInWithCredential(credential);
+
+      User? user = await getCurrentUser(userCredential.user?.uid ?? '');
+
+      if (user == null) {
+        String profileImageUrl = '';
+        if (imageData != null) {
+          profileImageUrl = await uploadUserImageToServer(
+              imageData, userCredential.user?.uid ?? '');
+        }
+
+        User newUser = User(
+          firstName: firstName!,
+          lastName: lastName!,
+          email: '',
+          profilePictureURL: profileImageUrl,
+          userID: userCredential.user?.uid ?? '',
+        );
+        return await createNewUser(newUser);
+      }
+      return user;
+    } catch (e) {
+      debugPrint("Erro ao fazer login com número de telefone: $e");
+      return 'Erro ao realizar login.';
+    }
+  }
+
+  /// Realiza o reset da senha do usuário.
+  static Future<void> resetPassword(String emailAddress) async {
+    try {
+      await auth.FirebaseAuth.instance
+          .sendPasswordResetEmail(email: emailAddress);
+    } catch (e) {
+      debugPrint("Erro ao enviar email de redefinição de senha: $e");
+    }
+  }
+
+  /// Trata erros do Firebase Authentication.
+  static String _handleFirebaseAuthError(auth.FirebaseAuthException e) {
+    switch (e.code) {
       case 'invalid-email':
-        return 'Invalid email address.';
+        return 'E-mail inválido.';
       case 'wrong-password':
-        return 'Wrong password.';
+        return 'Senha incorreta.';
       case 'user-not-found':
-        return 'User not found.';
+        return 'Usuário não encontrado.';
       case 'user-disabled':
-        return 'User has been disabled.';
+        return 'Usuário desativado.';
       case 'too-many-requests':
-        return 'Too many login attempts. Please try again later.';
+        return 'Muitas tentativas. Tente novamente mais tarde.';
       default:
-        return 'Authentication error. Please try again.';
+        return 'Erro ao autenticar. Tente novamente.';
     }
   }
 }

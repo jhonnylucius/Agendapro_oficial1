@@ -3,58 +3,66 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_screen/constants.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
-/// Validators
+/// Valida se o nome contém apenas letras e espaços.
 String? validateName(String? value) {
+  String pattern = r'(^[a-zA-Z ]*$)';
+  RegExp regExp = RegExp(pattern);
+
   if (value?.isEmpty ?? true) {
-    return "Name is required";
-  }
-  final pattern = RegExp(r'(^[a-zA-Z ]*$)');
-  if (!pattern.hasMatch(value!)) {
-    return "Name must contain only letters and spaces";
+    return "Nome é obrigatório";
+  } else if (!regExp.hasMatch(value ?? '')) {
+    return "O nome deve conter apenas letras e espaços";
   }
   return null;
 }
 
+/// Valida se o número de telefone é válido.
 String? validateMobile(String? value) {
+  String pattern = r'(^\+?[0-9]*$)';
+  RegExp regExp = RegExp(pattern);
+
   if (value?.isEmpty ?? true) {
-    return "Mobile phone number is required";
-  }
-  final pattern = RegExp(r'(^\+?[0-9]*$)');
-  if (!pattern.hasMatch(value!)) {
-    return "Mobile phone number must contain only digits";
+    return "Número de telefone é obrigatório";
+  } else if (!regExp.hasMatch(value ?? '')) {
+    return "O número de telefone deve conter apenas dígitos";
   }
   return null;
 }
 
+/// Valida se a senha possui no mínimo 6 caracteres.
 String? validatePassword(String? value) {
   if ((value?.length ?? 0) < 6) {
-    return 'Password must be at least 6 characters';
+    return 'A senha deve ter pelo menos 6 caracteres';
   }
   return null;
 }
 
+/// Valida se o e-mail possui um formato válido.
 String? validateEmail(String? value) {
-  final pattern = RegExp(
-      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-  if (!(pattern.hasMatch(value ?? ''))) {
-    return 'Enter a valid email';
+  String pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regex = RegExp(pattern);
+
+  if (!regex.hasMatch(value ?? '')) {
+    return 'Insira um e-mail válido';
   }
   return null;
 }
 
+/// Valida se a senha e a confirmação coincidem.
 String? validateConfirmPassword(String? password, String? confirmPassword) {
   if (password != confirmPassword) {
-    return 'Passwords do not match';
-  }
-  if (confirmPassword?.isEmpty ?? true) {
-    return 'Confirm password is required';
+    return 'As senhas não coincidem';
+  } else if (confirmPassword?.isEmpty ?? true) {
+    return 'A confirmação de senha é obrigatória';
   }
   return null;
 }
 
-/// Progress Dialog
+/// Variável global para gerenciar o progresso.
 late ProgressDialog progressDialog;
 
+/// Exibe um diálogo de progresso.
 Future<void> showProgress(
     BuildContext context, String message, bool isDismissible) async {
   progressDialog = ProgressDialog(context,
@@ -63,9 +71,9 @@ Future<void> showProgress(
     message: message,
     borderRadius: 10.0,
     backgroundColor: const Color(colorPrimary),
-    progressWidget: const Padding(
-      padding: EdgeInsets.all(8.0),
-      child: CircularProgressIndicator(
+    progressWidget: Container(
+      padding: const EdgeInsets.all(8.0),
+      child: const CircularProgressIndicator(
         backgroundColor: Colors.white,
         valueColor: AlwaysStoppedAnimation(Color(colorPrimary)),
       ),
@@ -78,22 +86,26 @@ Future<void> showProgress(
   await progressDialog.show();
 }
 
+/// Atualiza a mensagem do diálogo de progresso.
 void updateProgress(String message) {
   progressDialog.update(message: message);
 }
 
+/// Oculta o diálogo de progresso.
 Future<void> hideProgress() async {
   await progressDialog.hide();
 }
 
-/// Alert Dialog
+/// Exibe um alerta com título e mensagem.
 void showAlertDialog(BuildContext context, String title, String content) {
-  final okButton = TextButton(
+  Widget okButton = TextButton(
     child: const Text("OK"),
-    onPressed: () => Navigator.pop(context),
+    onPressed: () {
+      Navigator.pop(context);
+    },
   );
 
-  final alert = AlertDialog(
+  AlertDialog alert = AlertDialog(
     title: Text(title),
     content: Text(content),
     actions: [okButton],
@@ -101,64 +113,68 @@ void showAlertDialog(BuildContext context, String title, String content) {
 
   showDialog(
     context: context,
-    builder: (BuildContext context) => alert,
+    builder: (BuildContext context) {
+      return alert;
+    },
   );
 }
 
-/// Navigation Helpers
+/// Substitui a rota atual pela rota de destino.
 void pushReplacement(BuildContext context, Widget destination) {
   Navigator.of(context)
       .pushReplacement(MaterialPageRoute(builder: (context) => destination));
 }
 
+/// Adiciona uma nova rota na pilha de navegação.
 void push(BuildContext context, Widget destination) {
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => destination));
 }
 
-void pushAndRemoveUntil(
-    BuildContext context, Widget destination, bool Function(Route) predicate) {
+/// Remove todas as rotas até a condição fornecida e adiciona uma nova.
+void pushAndRemoveUntil(BuildContext context, Widget destination,
+    bool Function(Route<dynamic>) predict) {
   Navigator.of(context).pushAndRemoveUntil(
     MaterialPageRoute(builder: (context) => destination),
-    predicate,
+    predict,
   );
 }
 
-/// Image Helpers
-Widget displayCircleImage(String picUrl, double size, bool hasBorder) {
-  return CachedNetworkImage(
-    imageBuilder: (context, imageProvider) =>
-        _getCircularImageProvider(imageProvider, size, hasBorder),
-    imageUrl: picUrl,
-    placeholder: (context, url) => _getPlaceholderOrErrorImage(size, hasBorder),
-    errorWidget: (context, url, error) =>
-        _getPlaceholderOrErrorImage(size, hasBorder),
-  );
-}
+/// Exibe uma imagem circular a partir de uma URL.
+Widget displayCircleImage(String picUrl, double size, bool hasBorder) =>
+    CachedNetworkImage(
+      imageBuilder: (context, imageProvider) =>
+          _getCircularImageProvider(imageProvider, size, hasBorder),
+      imageUrl: picUrl,
+      placeholder: (context, url) =>
+          _getPlaceholderOrErrorImage(size, hasBorder),
+      errorWidget: (context, url, error) =>
+          _getPlaceholderOrErrorImage(size, hasBorder),
+    );
 
-Widget _getPlaceholderOrErrorImage(double size, bool hasBorder) {
-  return Container(
-    width: size,
-    height: size,
-    decoration: BoxDecoration(
-      color: const Color(0xff7c94b6),
-      borderRadius: BorderRadius.all(Radius.circular(size / 2)),
-      border: Border.all(
-        color: Colors.white,
-        width: hasBorder ? 2.0 : 0.0,
+/// Retorna uma imagem de placeholder ou de erro.
+Widget _getPlaceholderOrErrorImage(double size, bool hasBorder) => Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: const Color(0xff7c94b6),
+        borderRadius: BorderRadius.all(Radius.circular(size / 2)),
+        border: Border.all(
+          color: Colors.white,
+          width: hasBorder ? 2.0 : 0.0,
+        ),
       ),
-    ),
-    child: ClipOval(
-      child: Image.asset(
-        'assets/images/placeholder.jpg',
-        fit: BoxFit.cover,
-        height: size,
-        width: size,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/placeholder.jpg',
+          fit: BoxFit.cover,
+          height: size,
+          width: size,
+        ),
       ),
-    ),
-  );
-}
+    );
 
+/// Retorna um widget com uma imagem circular a partir de um provedor.
 Widget _getCircularImageProvider(
     ImageProvider provider, double size, bool hasBorder) {
   return ClipOval(
@@ -178,11 +194,12 @@ Widget _getCircularImageProvider(
   );
 }
 
-/// Theme Helpers
+/// Verifica se o modo escuro está ativado.
 bool isDarkMode(BuildContext context) {
   return Theme.of(context).brightness == Brightness.dark;
 }
 
+/// Retorna o estilo de input decoration com base no tema.
 InputDecoration getInputDecoration({
   required String hint,
   required bool darkMode,
@@ -198,21 +215,21 @@ InputDecoration getInputDecoration({
       borderSide: const BorderSide(color: Color(colorPrimary), width: 2.0),
     ),
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(25.0),
       borderSide: BorderSide(color: errorColor),
+      borderRadius: BorderRadius.circular(25.0),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(25.0),
       borderSide: BorderSide(color: errorColor),
+      borderRadius: BorderRadius.circular(25.0),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(25.0),
       borderSide: BorderSide(color: Colors.grey.shade200),
+      borderRadius: BorderRadius.circular(25.0),
     ),
   );
 }
 
-/// SnackBar Helper
+/// Exibe uma mensagem como um Snackbar.
 void showSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()

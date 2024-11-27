@@ -11,135 +11,116 @@ import 'package:flutter_login_screen/ui/auth/launcherScreen/launcher_screen.dart
 import 'package:flutter_login_screen/ui/loading_cubit.dart';
 
 void main() async {
+  // Garante que os widgets do Flutter são inicializados antes do código principal
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicialização do FacebookAuth para Web e macOS
+  // Inicializa a autenticação do Facebook
+  await _initializeFacebookAuth();
+
+  // Inicializa o aplicativo principal
+  runApp(const MyApp());
+}
+
+// Função para inicializar o Facebook Auth
+Future<void> _initializeFacebookAuth() async {
   if (kIsWeb || defaultTargetPlatform == TargetPlatform.macOS) {
     await FacebookAuth.i.webAndDesktopInitialize(
-      appId: facebookAppID,
+      appId: facebookAppID, // ID do app registrado no Facebook
       cookie: true,
       xfbml: true,
       version: "v15.0",
     );
   }
-
-  runApp(MultiRepositoryProvider(
-    providers: [
-      RepositoryProvider(create: (_) => AuthenticationBloc()),
-      RepositoryProvider(create: (_) => LoadingCubit()),
-    ],
-    child: const MyApp(),
-  ));
 }
 
-class MyApp extends StatefulWidget {
+// Widget principal do aplicativo
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  MyAppState createState() => MyAppState();
+  Widget build(BuildContext context) {
+    // Provedores para gerenciar o estado do aplicativo
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+            create: (_) => AuthenticationBloc()), // Gerencia autenticação
+        RepositoryProvider(
+            create: (_) => LoadingCubit()), // Gerencia estado de carregamento
+      ],
+      child:
+          const AppInitializer(), // Inicializa o Firebase e outras dependências
+    );
+  }
 }
 
-class MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  bool _initialized = false;
-  bool _error = false;
+// Classe que inicializa o Firebase e verifica erros durante o processo
+class AppInitializer extends StatefulWidget {
+  const AppInitializer({Key? key}) : super(key: key);
+
+  @override
+  _AppInitializerState createState() => _AppInitializerState();
+}
+
+class _AppInitializerState extends State<AppInitializer> {
+  bool _isInitialized = false; // Estado inicial do Firebase
+  bool _hasError = false; // Indica se ocorreu um erro na inicialização
 
   @override
   void initState() {
     super.initState();
-    _initializeFlutterFire();
+    _initializeFirebase(); // Inicializa o Firebase ao iniciar o app
   }
 
-  /// Método para inicializar o Firebase
-  Future<void> _initializeFlutterFire() async {
+  // Função para inicializar o Firebase
+  Future<void> _initializeFirebase() async {
     try {
       if (kIsWeb) {
+        // Configuração específica para a web
         await Firebase.initializeApp(options: DefaultFirebaseOptions.web);
       } else {
+        // Configuração para outras plataformas
         await Firebase.initializeApp();
       }
-      _setInitialized(true);
-    } catch (e) {
-      debugPrint('Erro ao inicializar o Firebase: $e');
-      _setError(true);
-    }
-  }
-
-  /// Atualiza o estado para indicar inicialização bem-sucedida
-  void _setInitialized(bool value) {
-    if (mounted) {
       setState(() {
-        _initialized = value;
+        _isInitialized = true; // Define como inicializado com sucesso
       });
-    }
-  }
-
-  /// Atualiza o estado para indicar erro na inicialização
-  void _setError(bool value) {
-    if (mounted) {
+    } catch (_) {
       setState(() {
-        _error = value;
+        _hasError = true; // Define como erro caso ocorra falha na inicialização
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Exibe mensagem de erro se a inicialização falhar
-    if (_error) {
-      return MaterialApp(
-        home: Scaffold(
-          body: Container(
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.error_outline, color: Colors.red, size: 50),
-                  SizedBox(height: 16),
-                  Text(
-                    'Erro ao inicializar o Firebase!',
-                    style: TextStyle(color: Colors.red, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+    if (_hasError) {
+      // Exibe a tela de erro caso ocorra falha na inicialização
+      return const _ErrorScreen();
     }
 
-    // Exibe indicador de carregamento enquanto o Firebase não está inicializado
-    if (!_initialized) {
-      return MaterialApp(
-        home: Container(
-          color: Colors.white,
-          child: const Center(
-            child: CircularProgressIndicator.adaptive(),
-          ),
-        ),
-      );
+    if (!_isInitialized) {
+      // Exibe a tela de carregamento enquanto o Firebase não estiver pronto
+      return const _LoadingScreen();
     }
 
-    // Retorna a aplicação principal
+    // Configuração principal do app quando o Firebase estiver inicializado
     return MaterialApp(
-      theme: _buildLightTheme(context),
-      darkTheme: _buildDarkTheme(context),
+      theme: _buildLightTheme(), // Tema claro
+      darkTheme: _buildDarkTheme(), // Tema escuro
       debugShowCheckedModeBanner: false,
-      home: const LauncherScreen(),
+      home: const LauncherScreen(), // Tela inicial do aplicativo
     );
   }
 
-  /// Tema claro da aplicação
-  ThemeData _buildLightTheme(BuildContext context) {
+  // Método para criar o tema claro do aplicativo
+  ThemeData _buildLightTheme() {
     return ThemeData(
       brightness: Brightness.light,
-      scaffoldBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      scaffoldBackgroundColor: Colors.white,
       appBarTheme:
           const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark),
       snackBarTheme: const SnackBarThemeData(
-        contentTextStyle: TextStyle(color: Colors.white),
-      ),
+          contentTextStyle: TextStyle(color: Colors.white)),
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: const Color(colorPrimary),
         brightness: Brightness.light,
@@ -147,19 +128,65 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 
-  /// Tema escuro da aplicação
-  ThemeData _buildDarkTheme(BuildContext context) {
+  // Método para criar o tema escuro do aplicativo
+  ThemeData _buildDarkTheme() {
     return ThemeData(
       brightness: Brightness.dark,
       scaffoldBackgroundColor: Colors.grey.shade800,
       appBarTheme:
           const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light),
       snackBarTheme: const SnackBarThemeData(
-        contentTextStyle: TextStyle(color: Colors.white),
-      ),
+          contentTextStyle: TextStyle(color: Colors.white)),
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: const Color(colorPrimary),
         brightness: Brightness.dark,
+      ),
+    );
+  }
+}
+
+// Tela exibida quando ocorre um erro
+class _ErrorScreen extends StatelessWidget {
+  const _ErrorScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Container(
+          color: Colors.white,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.error_outline, color: Colors.red, size: 50),
+                SizedBox(height: 16),
+                Text(
+                  'Falha ao inicializar o Firebase!',
+                  style: TextStyle(color: Colors.red, fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Tela exibida durante o carregamento
+class _LoadingScreen extends StatelessWidget {
+  const _LoadingScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Container(
+        color: Colors.white,
+        child: const Center(
+          child: CircularProgressIndicator.adaptive(),
+        ),
       ),
     );
   }
