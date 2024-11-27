@@ -1,6 +1,7 @@
 # AgendaProOficial
 AgendaPRO é uma aplicação moderna e prática para conectar prestadores de serviços e clientes, facilitando o agendamento de serviços com eficiência e simplicidade!
 
+- [Documentação do projeto - WIKI](https://github.com/jhonnylucius/Agendapro_oficial1/wiki)
 
 # 🚀 Passo a Passo Detalhado para Configuração do Ambiente Flutter
 
