@@ -1,10 +1,10 @@
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/services/helper.dart';
+import 'package:agendapro/ui/auth/authentication_bloc.dart';
+import 'package:agendapro/ui/auth/onBoarding/on_boarding_cubit.dart';
+import 'package:agendapro/ui/auth/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/services/helper.dart';
-import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
-import 'package:flutter_login_screen/ui/auth/onBoarding/on_boarding_cubit.dart';
-import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 /// Tela de Onboarding que apresenta informações iniciais para o usuário.
@@ -72,8 +72,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           BlocListener<AuthenticationBloc, AuthenticationState>(
                         listener: (context, state) {
                           if (state.authState == AuthState.unauthenticated) {
-                            pushAndRemoveUntil(
-                                context, const WelcomeScreen(), false);
+                            pushAndRemoveUntil(context, const WelcomeScreen(),
+                                (Route<dynamic> route) => false);
                           }
                         },
                         child: OutlinedButton(

@@ -1,9 +1,9 @@
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/services/helper.dart';
+import 'package:agendapro/ui/auth/resetPasswordScreen/reset_password_cubit.dart';
+import 'package:agendapro/ui/loading_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/services/helper.dart';
-import 'package:flutter_login_screen/ui/auth/resetPasswordScreen/reset_password_cubit.dart';
-import 'package:flutter_login_screen/ui/loading_cubit.dart';
 
 /// Tela para redefinição de senha.
 /// Permite ao usuário solicitar a redefinição de senha por e-mail.
@@ -96,7 +96,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             decoration: getInputDecoration(
                                 hint: 'E-mail',
                                 darkMode: isDarkMode(context),
-                                errorColor: Theme.of(context).colorScheme.error),
+                                errorColor:
+                                    Theme.of(context).colorScheme.error),
                           ),
                         ),
                         Padding(

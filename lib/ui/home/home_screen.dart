@@ -1,12 +1,12 @@
 import 'dart:math';
 
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/model/user.dart';
+import 'package:agendapro/services/helper.dart';
+import 'package:agendapro/ui/auth/authentication_bloc.dart';
+import 'package:agendapro/ui/auth/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/model/user.dart';
-import 'package:flutter_login_screen/services/helper.dart';
-import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
-import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
 
 /// Tela inicial do aplicativo, exibindo as informações do usuário logado.
 /// Permite logout através do menu lateral.
@@ -36,7 +36,8 @@ class _HomeState extends State<HomeScreen> {
       listener: (context, state) {
         // Redireciona o usuário para a tela de boas-vindas caso não esteja autenticado.
         if (state.authState == AuthState.unauthenticated) {
-          pushAndRemoveUntil(context, const WelcomeScreen(), false);
+          pushAndRemoveUntil(
+              context, const WelcomeScreen(), (Route<dynamic> route) => false);
         }
       },
       child: Scaffold(

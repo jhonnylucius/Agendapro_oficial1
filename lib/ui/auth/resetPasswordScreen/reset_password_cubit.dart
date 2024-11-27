@@ -1,6 +1,6 @@
+import 'package:agendapro/services/authenticate.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_login_screen/services/authenticate.dart';
 
 part 'reset_password_state.dart';
 

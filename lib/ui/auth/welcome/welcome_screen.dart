@@ -1,10 +1,10 @@
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/services/helper.dart';
+import 'package:agendapro/ui/auth/login/login_screen.dart';
+import 'package:agendapro/ui/auth/signUp/sign_up_screen.dart';
+import 'package:agendapro/ui/auth/welcome/welcome_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/services/helper.dart';
-import 'package:flutter_login_screen/ui/auth/login/login_screen.dart';
-import 'package:flutter_login_screen/ui/auth/signUp/sign_up_screen.dart';
-import 'package:flutter_login_screen/ui/auth/welcome/welcome_bloc.dart';
 
 /// Tela de boas-vindas do aplicativo.
 class WelcomeScreen extends StatelessWidget {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary App Colors -->
+    <color name="colorPrimary">#4549BC</color> <!-- Cor principal -->
+    <color name="colorPrimaryDark">#3036A1</color> <!-- Variante escura -->
+    <color name="colorAccent">#FF4081</color> <!-- Cor de destaque -->
+
+    <!-- Background and Text Colors -->
+    <color name="colorBackground">#FFFFFF</color> <!-- Fundo branco -->
+    <color name="colorBackgroundDark">#121212</color> <!-- Fundo escuro -->
+    <color name="colorTextPrimary">#000000</color> <!-- Texto principal -->
+    <color name="colorTextSecondary">#757575</color> <!-- Texto secundário -->
+
+    <!-- Custom Colors -->
+    <color name="ic_launcher_background">#4549BC</color> <!-- Cor do ícone -->
+</resources>

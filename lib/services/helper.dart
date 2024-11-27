@@ -1,6 +1,6 @@
+import 'package:agendapro/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_login_screen/constants.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 /// Valida se o nome contém apenas letras e espaços.

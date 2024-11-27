@@ -1,16 +1,16 @@
 import 'dart:io';
 
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/services/helper.dart';
+import 'package:agendapro/ui/auth/authentication_bloc.dart';
+import 'package:agendapro/ui/auth/signUp/sign_up_bloc.dart';
+import 'package:agendapro/ui/home/home_screen.dart';
+import 'package:agendapro/ui/loading_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/services/helper.dart';
-import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
-import 'package:flutter_login_screen/ui/auth/signUp/sign_up_bloc.dart';
-import 'package:flutter_login_screen/ui/home/home_screen.dart';
-import 'package:flutter_login_screen/ui/loading_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SignUpScreen extends StatefulWidget {

@@ -1,12 +1,12 @@
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/services/helper.dart';
+import 'package:agendapro/ui/auth/authentication_bloc.dart';
+import 'package:agendapro/ui/auth/onBoarding/data.dart';
+import 'package:agendapro/ui/auth/onBoarding/on_boarding_screen.dart';
+import 'package:agendapro/ui/auth/welcome/welcome_screen.dart';
+import 'package:agendapro/ui/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/services/helper.dart';
-import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
-import 'package:flutter_login_screen/ui/auth/onBoarding/data.dart';
-import 'package:flutter_login_screen/ui/auth/onBoarding/on_boarding_screen.dart';
-import 'package:flutter_login_screen/ui/auth/welcome/welcome_screen.dart';
-import 'package:flutter_login_screen/ui/home/home_screen.dart';
 
 /// Tela inicial que redireciona o usuário para a tela apropriada
 /// com base no estado de autenticação ou se é a primeira execução.

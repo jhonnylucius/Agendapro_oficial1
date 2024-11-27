@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/model/user.dart';
+import 'package:agendapro/services/authenticate.dart';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/model/user.dart';
-import 'package:flutter_login_screen/services/authenticate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'authentication_event.dart';

@@ -1,13 +1,12 @@
+import 'package:agendapro/constants.dart';
+import 'package:agendapro/services/helper.dart';
+import 'package:agendapro/ui/auth/authentication_bloc.dart';
+import 'package:agendapro/ui/auth/login/login_bloc.dart';
+import 'package:agendapro/ui/auth/resetPasswordScreen/reset_password_screen.dart';
+import 'package:agendapro/ui/home/home_screen.dart';
+import 'package:agendapro/ui/loading_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_login_screen/constants.dart';
-import 'package:flutter_login_screen/services/helper.dart';
-import 'package:flutter_login_screen/ui/auth/authentication_bloc.dart';
-import 'package:flutter_login_screen/ui/auth/login/login_bloc.dart';
-import 'package:flutter_login_screen/ui/auth/resetPasswordScreen/reset_password_screen.dart';
-import 'package:flutter_login_screen/ui/home/home_screen.dart';
-import 'package:flutter_login_screen/ui/loading_cubit.dart';
-import 'package:the_apple_sign_in/the_apple_sign_in.dart' as apple;
 
 /// Tela de Login para autenticar usuários usando email/senha ou métodos de terceiros.
 class LoginScreen extends StatefulWidget {
@@ -42,8 +41,8 @@ class _LoginScreen extends State<LoginScreen> {
                   await context.read<LoadingCubit>().hideLoading();
                   if (state.authState == AuthState.authenticated) {
                     if (!mounted) return;
-                    pushAndRemoveUntil(
-                        context, HomeScreen(user: state.user!), false);
+                    pushAndRemoveUntil(context, HomeScreen(user: state.user!),
+                        (Route<dynamic> route) => false);
                   } else {
                     if (!mounted) return;
                     showSnackBar(
@@ -117,7 +116,8 @@ class _LoginScreen extends State<LoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Endereço de Email',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).colorScheme.error)),
+                                  errorColor:
+                                      Theme.of(context).colorScheme.error)),
                         ),
 
                         /// Campo para a senha do usuário.
@@ -140,7 +140,8 @@ class _LoginScreen extends State<LoginScreen> {
                               decoration: getInputDecoration(
                                   hint: 'Senha',
                                   darkMode: isDarkMode(context),
-                                  errorColor: Theme.of(context).colorScheme.error)),
+                                  errorColor:
+                                      Theme.of(context).colorScheme.error)),
                         ),
 
                         /// Texto para redefinir senha.
