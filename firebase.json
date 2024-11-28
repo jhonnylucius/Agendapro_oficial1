@@ -1,1 +1,0 @@
-{"hosting":{"public":"public","ignore":["firebase.json","**/.*","**/node_modules/**"]},"flutter":{"platforms":{"android":{"default":{"projectId":"agendapro-e085f","appId":"1:883614121730:android:2b7435e860740fa75e0c1b","fileOutput":"android/app/google-services.json"}}}}}
