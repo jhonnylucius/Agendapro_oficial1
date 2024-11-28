@@ -60,7 +60,13 @@ add_library(flutter_wrapper_plugin STATIC
   ${CPP_WRAPPER_SOURCES_CORE}
   ${CPP_WRAPPER_SOURCES_PLUGIN}
 )
-apply_standard_settings(flutter_wrapper_plugin)
+set_target_properties(flutter_wrapper_plugin PROPERTIES
+  CXX_STANDARD 14
+  CXX_STANDARD_REQUIRED YES
+  CXX_EXTENSIONS NO
+  POSITION_INDEPENDENT_CODE ON
+  CXX_VISIBILITY_PRESET hidden
+)
 set_target_properties(flutter_wrapper_plugin PROPERTIES
   POSITION_INDEPENDENT_CODE ON)
 set_target_properties(flutter_wrapper_plugin PROPERTIES
@@ -77,7 +83,11 @@ add_library(flutter_wrapper_app STATIC
   ${CPP_WRAPPER_SOURCES_CORE}
   ${CPP_WRAPPER_SOURCES_APP}
 )
-apply_standard_settings(flutter_wrapper_app)
+set_target_properties(flutter_wrapper_app PROPERTIES
+  CXX_STANDARD 14
+  CXX_STANDARD_REQUIRED YES
+  CXX_EXTENSIONS NO
+)
 target_link_libraries(flutter_wrapper_app PUBLIC flutter)
 target_include_directories(flutter_wrapper_app PUBLIC
   "${WRAPPER_ROOT}/include"
