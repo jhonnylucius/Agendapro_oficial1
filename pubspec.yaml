@@ -51,3 +51,5 @@ flutter:
   assets:
     - assets/images/
     - assets/welcome_image.png
+
+js: ^0.6.5
