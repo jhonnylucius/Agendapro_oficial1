@@ -1,40 +1,31 @@
 part of 'sign_up_bloc.dart';
 
-/// Enum que define o estado atual da autenticação.
-enum AuthState {
-  /// Estado inicial (primeira vez que o app é executado).
-  firstRun,
+/// Classe base para os estados do SignUp.
+abstract class SignUpState {}
 
-  /// Estado quando o usuário está autenticado.
-  authenticated,
+/// Estado inicial do SignUp.
+class SignUpInitial extends SignUpState {}
 
-  /// Estado quando o usuário não está autenticado.
-  unauthenticated,
+/// Estado quando uma imagem é selecionada com sucesso.
+class PictureSelectedState extends SignUpState {
+  final Uint8List imageData;
+
+  PictureSelectedState({required this.imageData});
 }
 
-/// Classe que representa os diferentes estados do processo de autenticação.
-class AuthenticationState {
-  /// Define o estado atual da autenticação.
-  final AuthState authState;
+/// Estado para campos validados com sucesso.
+class ValidFields extends SignUpState {}
 
-  /// Usuário autenticado (opcional, apenas no estado autenticado).
-  final User? user;
+/// Estado para quando há falha no cadastro.
+class SignUpFailureState extends SignUpState {
+  final String errorMessage;
 
-  /// Mensagem de erro ou status (opcional).
-  final String? message;
+  SignUpFailureState({required this.errorMessage});
+}
 
-  /// Construtor privado para instanciar diferentes estados.
-  const AuthenticationState._(this.authState, {this.user, this.message});
+/// Estado para alternar o status do EULA (termos de uso).
+class EulaToggleState extends SignUpState {
+  final bool eulaAccepted;
 
-  /// Estado autenticado com o usuário logado.
-  const AuthenticationState.authenticated(User user)
-      : this._(AuthState.authenticated, user: user);
-
-  /// Estado não autenticado com uma mensagem opcional.
-  const AuthenticationState.unauthenticated({String? message})
-      : this._(AuthState.unauthenticated,
-            message: message ?? 'Usuário não autenticado.');
-
-  /// Estado inicial, representando a primeira vez que o app é executado.
-  const AuthenticationState.onboarding() : this._(AuthState.firstRun);
+  EulaToggleState(this.eulaAccepted);
 }

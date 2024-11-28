@@ -45,8 +45,8 @@ class _SignUpState extends State<SignUpScreen> {
                 listener: (context, state) {
                   context.read<LoadingCubit>().hideLoading();
                   if (state.authState == AuthState.authenticated) {
-                    pushAndRemoveUntil(
-                        context, HomeScreen(user: state.user!), false);
+                    pushAndRemoveUntil(context, HomeScreen(user: state.user!),
+                        (Route<dynamic> route) => false);
                   } else {
                     showSnackBar(
                         context,
