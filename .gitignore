@@ -64,6 +64,7 @@ android/app/src/main/res/values/strings.xml
 # Firebase and Debug
 .firebase/
 firebase-debug.log
+firebase.json
 
 # Node.js related
 node_modules/
@@ -75,3 +76,33 @@ pubspec.lock
 
 # Cache files
 *.lock
+
+# Android build files
+android/key.properties
+android/local.properties
+android/app/build/
+android/app/src/main/assets/flutter_assets/
+android/app/src/main/assets/flutter_service_worker.js
+android/app/src/main/assets/flutter_service_worker.js.map
+android/app/src/main/assets/flutter_web_entrypoint.js
+android/app/src/main/assets/flutter_web_entrypoint.js.map
+android/app/src/main/assets/flutter_web_entrypoint.dart
+android/app/src/main/assets/flutter_web_entrypoint.dart.map
+android/app/src/main/assets/flutter_web_entrypoint.dart.js
+android/app/src/main/assets/flutter_web_entrypoint.dart.js.map
+android/app/src/main/assets/flutter_web_entrypoint.dart.js.metadata
+android/app/src/main/assets/flutter_web_entrypoint.dart.js.metadata.json
+android/app/src/main/assets/flutter_web_entrypoint.dart.js.map
+
+# iOS build files
+ios/Pods/
+ios/Podfile.lock
+ios/Podfile
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/FlutterPluginRegistrant.framework
+ios/Flutter/FlutterPluginRegistrant.podspec
+
+
+
