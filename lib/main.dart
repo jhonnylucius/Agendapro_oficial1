@@ -58,12 +58,12 @@ class AppInitializer extends StatefulWidget {
   const AppInitializer({super.key});
 
   @override
-  _AppInitializerState createState() => _AppInitializerState();
+  AppInitializerState createState() => AppInitializerState();
 }
 
 mixin AppInitializerState {}
 
-class _AppInitializerState extends State<AppInitializer> {
+class AppInitializerState extends State<AppInitializer> {
   bool _isInitialized = false; // Estado inicial do Firebase
   bool _hasError = false; // Indica se ocorreu um erro na inicialização
 
