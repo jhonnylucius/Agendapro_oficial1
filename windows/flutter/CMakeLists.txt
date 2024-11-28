@@ -1,6 +1,11 @@
 # This file controls Flutter-level build steps. It should not be edited.
 cmake_minimum_required(VERSION 3.14)
 
+project(FlutterApp)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(EPHEMERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ephemeral")
 
 # Configuration provided via flutter tool.
@@ -16,13 +21,13 @@ if (NOT DEFINED FLUTTER_TARGET_PLATFORM)
 endif()
 
 # === Flutter Library ===
-set(FLUTTER_LIBRARY "${EPHEMERAL_DIR}/flutter_windows.dll")
+set(FLUTTER_LIBRARY "${EPHEMERAL_DIR}/flutter_windows.dll" CACHE STRING "Flutter library path")
 
 # Published to parent scope for install step.
-set(FLUTTER_LIBRARY ${FLUTTER_LIBRARY} PARENT_SCOPE)
-set(FLUTTER_ICU_DATA_FILE "${EPHEMERAL_DIR}/icudtl.dat" PARENT_SCOPE)
-set(PROJECT_BUILD_DIR "${PROJECT_DIR}/build/")
-set(AOT_LIBRARY "${PROJECT_DIR}/build/windows/app.so" PARENT_SCOPE)
+set(FLUTTER_LIBRARY ${FLUTTER_LIBRARY} CACHE STRING "Flutter library path" PARENT_SCOPE)
+set(FLUTTER_ICU_DATA_FILE "${EPHEMERAL_DIR}/icudtl.dat" CACHE STRING "Flutter ICU data file" PARENT_SCOPE)
+set(PROJECT_BUILD_DIR "${PROJECT_DIR}/build/" CACHE STRING "Project build directory")
+set(AOT_LIBRARY "${PROJECT_DIR}/build/windows/app.so" CACHE STRING "AOT library" PARENT_SCOPE)
 
 list(APPEND FLUTTER_LIBRARY_HEADERS
   "flutter_export.h"
@@ -61,7 +66,7 @@ add_library(flutter_wrapper_plugin STATIC
   ${CPP_WRAPPER_SOURCES_PLUGIN}
 )
 set_target_properties(flutter_wrapper_plugin PROPERTIES
-  CXX_STANDARD 14
+  CXX_STANDARD 17
   CXX_STANDARD_REQUIRED YES
   CXX_EXTENSIONS NO
   POSITION_INDEPENDENT_CODE ON
@@ -84,7 +89,7 @@ add_library(flutter_wrapper_app STATIC
   ${CPP_WRAPPER_SOURCES_APP}
 )
 set_target_properties(flutter_wrapper_app PROPERTIES
-  CXX_STANDARD 14
+  CXX_STANDARD 17
   CXX_STANDARD_REQUIRED YES
   CXX_EXTENSIONS NO
 )

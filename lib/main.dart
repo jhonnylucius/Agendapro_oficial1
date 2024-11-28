@@ -61,7 +61,7 @@ class AppInitializer extends StatefulWidget {
   AppInitializerState createState() => AppInitializerState();
 }
 
-mixin AppInitializerState {}
+mixin AppInitializerStateMixin {}
 
 class AppInitializerState extends State<AppInitializer> {
   bool _isInitialized = false; // Estado inicial do Firebase
