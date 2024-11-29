@@ -24,7 +24,7 @@ endif()
 set(FLUTTER_LIBRARY "${EPHEMERAL_DIR}/flutter_windows.dll" CACHE STRING "Flutter library path")
 
 # Published to parent scope for install step.
-set(FLUTTER_LIBRARY ${FLUTTER_LIBRARY} CACHE STRING "Flutter library path" PARENT_SCOPE)
+set(FLUTTER_LIBRARY ${FLUTTER_LIBRARY} CACHE STRING "Flutter library path")
 set(FLUTTER_ICU_DATA_FILE "${EPHEMERAL_DIR}/icudtl.dat" CACHE STRING "Flutter ICU data file" PARENT_SCOPE)
 set(PROJECT_BUILD_DIR "${PROJECT_DIR}/build/" CACHE STRING "Project build directory")
 set(AOT_LIBRARY "${PROJECT_DIR}/build/windows/app.so" CACHE STRING "AOT library" PARENT_SCOPE)
